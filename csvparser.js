@@ -15,19 +15,19 @@ Ext.define("CsvParser", function() {
             self.errors = [];
             self.csvArray = self.csvToArray( self.getCsvString());
             return this;
-         },
+        },
 
-         isValid : function() {
+        isValid : function() {
             return self.valid;
-         },
+        },
 
-         getErrors : function() {
+        getErrors : function() {
             return self.errors;
-         },
+        },
 
-         getHeader : function() {
+        getHeader : function() {
             return self.header;
-         },
+        },
 
         csvToArray : function(csvString){
             // The array we're going to build

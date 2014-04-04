@@ -1,91 +1,103 @@
 var app = null;
 
 Ext.define('CustomApp', {
-	extend: 'Rally.app.App',
-	componentCls: 'app',
-	items:{ },
-	margin : 25,
+    extend: 'Rally.app.App',
+    componentCls: 'app',
+    items:{ },
+    margin : 25,
 
-	launch: function() {
+    // validation:
+    // compare to type definitions to highlight which columns will be used (including custom)
+    // identify required columns
+    // for drop down fields does the value exist.
+    // does the row already exist
+    // do parent or related items exist
+    // length of desc and other fields
+    // if project specified does it exist
 
-		app = this;
+    launch: function() {
 
-		var ff = Ext.create("Ext.form.field.File", {
-			margin : 10,	
-			id: 'form-file',
-			emptyText: 'Select an image',
-			fieldLabel: 'Upload File',
-			name: 'photo-path',
-			buttonText: 'Select',
-			listeners : {
-				afterrender : function() {
-					var f = document.querySelector('input[type="file"]');
-					app.addFileEvent(f);
-				}
-			},
-			width : 400,
-			autoRender : true
-		});
+        app = this;
 
-		app.add(ff);
-	},
+        var ff = Ext.create("Ext.form.field.File", {
+            margin : 10,    
+            id: 'form-file',
+            emptyText: 'Select an image',
+            fieldLabel: 'Upload File',
+            name: 'photo-path',
+            buttonText: 'Select',
+            listeners : {
+                afterrender : function() {
+                    var f = document.querySelector('input[type="file"]');
+                    app.addFileEvent(f);
+                }
+            },
+            width : 400,
+            autoRender : true
+        });
 
-	addFileEvent : function(f) {
-		f.addEventListener('change',function(){
-			file = event.target.files[0];
-			console.log("file",file);
-			var reader = new FileReader();
-			reader.onload = function(event){
-				console.log(event.target.result.length);
-				var csv = Ext.create("CsvParser", {
-					csvString : event.target.result
-				});
-				app.addGrid(csv);
-			};
-			reader.onerror = function(){
-				console.log('On Error Event');
-			};
-			// reader.readAsDataURL(file);
-			reader.readAsText(file);
-		});
-	},
+        app.add(ff);
+    },
 
-	addGrid : function(csv) {
+    addFileEvent : function(f) {
+        f.addEventListener('change',function(){
+            file = event.target.files[0];
+            console.log("file",file);
+            var reader = new FileReader();
+            reader.onload = function(event){
+                console.log(event.target.result.length);
+                var csv = Ext.create("CsvParser", {
+                    csvString : event.target.result
+                });
+                app.addGrid(csv);
+            };
+            reader.onerror = function(){
+                Ext.MessageBox.show({
+                    title: 'File Error',
+                    msg: 'Error loading file',
+                    buttons: Ext.MessageBox.OK,
+                });
+                console.log('On Error Event');
+            };
+            // reader.readAsDataURL(file);
+            reader.readAsText(file);
+        });
+    },
 
-		var items = csv.getAsJson();
+    addGrid : function(csv) {
 
-		Ext.create('Ext.data.Store', {
-			storeId:'csvStore',
-			fields: csv.getHeader(),
-			data:{ 'items' : items },
-			proxy: {
-				type: 'memory',
-				reader: {
-					type: 'json',
-					root: 'items'
-				}
-			}
-		});
+        var items = csv.getAsJson();
 
-		var columns = _.map( csv.getHeader(),function(k) {
-				return { text: k, dataIndex: k, flex: 1, width : 100};
-		});
+        var columns = _.map( csv.getHeader(),function(k) {
+                return { text: k, dataIndex: k, flex: 1, width : 100};
+        });
 
-		console.log("cols:",columns);
+        if (app.grid!==undefined && app.grid!==null) {
+            app.grid.destroy();
+        }
 
-		if (app.grid!==undefined && app.grid!==null)
-			app.grid.destroy();
+        Ext.create('Ext.data.Store', {
+            storeId:'csvStore',
+            fields: csv.getHeader(),
+            data:{ 'items' : items },
+            proxy: {
+                type: 'memory',
+                reader: {
+                    type: 'json',
+                    root: 'items'
+                }
+            }
+        });
 
-		app.grid = Ext.create('Ext.grid.Panel', {
-			title: 'csv',
-			store: Ext.data.StoreManager.lookup('csvStore'),
-			columns: columns,
-			// width: 400,
-		});
+        app.grid = Ext.create('Ext.grid.Panel', {
+            title: 'csv',
+            store: Ext.data.StoreManager.lookup('csvStore'),
+            columns: columns,
+        });
 
-		app.add(app.grid);
+        app.add(app.grid);
 
-	}
+    }
 
 
 });
