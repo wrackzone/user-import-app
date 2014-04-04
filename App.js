@@ -52,10 +52,15 @@ Ext.define('CustomApp', {
 
 	addGrid : function(csv) {
 
+		var items = csv.getAsJson();
+
+		console.log("items:",items.length);
+		console.log("items:",items);
+
 		Ext.create('Ext.data.Store', {
 			storeId:'csvStore',
 			fields: csv.getHeader(),
-			data:{ 'items' : csv.getAsJson() },
+			data:{ 'items' : items },
 			proxy: {
 				type: 'memory',
 				reader: {

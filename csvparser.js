@@ -13,7 +13,6 @@ Ext.define("CsvParser", function() {
             this.initConfig(config);
             self.valid = true;
             self.errors = [];
-            console.log("string",self.getCsvString());
             self.csvArray = self.csvToArray( self.getCsvString());
             return this;
          },
@@ -48,10 +47,9 @@ Ext.define("CsvParser", function() {
                     self.valid = self.header.length > 0;
                 } else { // other rows
                     // console.log(rowArray);
-                    if (rowArray!==null) {
+                    if (rowArray!==null&&rowArray.length>0) {
                         csvArray.push(rowArray);
                     } else {
-                        // self.valid = false;
                         self.errors.push(rowIndex + ":"+csvRows[rowIndex]);
                     }
                 }
