@@ -61,10 +61,15 @@ Ext.define('CustomApp', {
 
 	addGrid : function(csv) {
 
+		var items = csv.getAsJson();
+
+		console.log("items:",items.length);
+		console.log("items:",items);
+
 		Ext.create('Ext.data.Store', {
 			storeId:'csvStore',
 			fields: csv.getHeader(),
-			data:{ 'items' : csv.getAsJson() },
+			data:{ 'items' : items },
 			proxy: {
 				type: 'memory',
 				reader: {
@@ -112,7 +117,6 @@ Ext.define('CustomApp', {
             this.initConfig(config);
             self.valid = true;
             self.errors = [];
-            console.log("string",self.getCsvString());
             self.csvArray = self.csvToArray( self.getCsvString());
             return this;
          },
@@ -147,10 +151,9 @@ Ext.define('CustomApp', {
                     self.valid = self.header.length > 0;
                 } else { // other rows
                     // console.log(rowArray);
-                    if (rowArray!==null) {
+                    if (rowArray!==null&&rowArray.length>0) {
                         csvArray.push(rowArray);
                     } else {
-                        // self.valid = false;
                         self.errors.push(rowIndex + ":"+csvRows[rowIndex]);
                     }
                 }
