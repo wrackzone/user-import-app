@@ -1,4 +1,8 @@
 var app = null;
+var console = window.console || {};
+
+console.log = console.log || Ext.emptyFn;
+console.dir = console.dir || Ext.emptyFn;
 
 Ext.define('CustomApp', {
     extend: 'Rally.app.App',
@@ -20,11 +24,11 @@ Ext.define('CustomApp', {
         app = this;
 
         var ff = Ext.create("Ext.form.field.File", {
-            margin : 10,    
+            margin : 10,
             id: 'form-file',
-            emptyText: 'Select an image',
+            emptyText: 'Select a CSV File',
             fieldLabel: 'Upload File',
-            name: 'photo-path',
+            name: 'csv-path',
             buttonText: 'Select',
             listeners : {
                 afterrender : function() {
@@ -76,7 +80,7 @@ Ext.define('CustomApp', {
             app.grid.destroy();
         }
 
-        Ext.create('Ext.data.Store', {
+        Ext.create('Rally.data.custom.Store', {
             storeId:'csvStore',
             fields: csv.getHeader(),
             data:{ 'items' : items },
@@ -89,10 +93,12 @@ Ext.define('CustomApp', {
             }
         });
 
-        app.grid = Ext.create('Ext.grid.Panel', {
-            title: 'csv',
+        app.grid = Ext.create('Rally.ui.grid.Grid', {
+            //title: 'csv',
             store: Ext.data.StoreManager.lookup('csvStore'),
-            columns: columns
+            plugins: [ 'rallycellediting' ],
+            enableEditing: true,
+            columnCfgs: columns
         });
 
         app.add(app.grid);
