@@ -55,7 +55,7 @@ Ext.define('CustomApp', {
                 Ext.MessageBox.show({
                     title: 'File Error',
                     msg: 'Error loading file',
-                    buttons: Ext.MessageBox.OK,
+                    buttons: Ext.MessageBox.OK
                 });
                 console.log('On Error Event');
             };
@@ -92,7 +92,7 @@ Ext.define('CustomApp', {
         app.grid = Ext.create('Ext.grid.Panel', {
             title: 'csv',
             store: Ext.data.StoreManager.lookup('csvStore'),
-            columns: columns,
+            columns: columns
         });
 
         app.add(app.grid);

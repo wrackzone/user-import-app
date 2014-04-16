@@ -97,5 +97,5 @@ Ext.define("CsvParser", function() {
             });
             return csv;
         }
-     }
+     };
  });
