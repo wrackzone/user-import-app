@@ -98,7 +98,14 @@ Ext.define('CustomApp', {
             store: Ext.data.StoreManager.lookup('csvStore'),
             plugins: [ 'rallycellediting' ],
             enableEditing: true,
-            columnCfgs: columns
+            columnCfgs: columns,
+            bbar: [{
+              type: 'rallybutton',
+              text: 'Validate'
+            }, {
+              type: 'rallybutton',
+              text: 'Import'
+            }]
         });
 
         app.add(app.grid);
